@@ -22,9 +22,8 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
 app.post('/',function(req,res){
   //var url_parts = url.parse(req.url, true);
-  console.log(req);
-  var data = JSON.parse(req.body);
-  console.log(data);
+  search = req.body.Body;
+  number = req.body.From;
 
   if(!search) {
     res.end('error');
@@ -44,7 +43,7 @@ app.post('/',function(req,res){
     get_song(res, word.word, function (song) {
       songs.push({song: song, i: word.i});
       cb();
-    })
+    },number)
   }, function (err) {
     if (err) {
       console.log('err');
@@ -59,23 +58,10 @@ app.post('/',function(req,res){
       out += song.song.SongName + ', ' + song.song.AlbumName + ', ' + song.song.ArtistName + '\n';
     });
     res.end(out);
-  });
-
-});
-
-function get_song(result, search, cb) {
-  var buffer = ''
-  var tiny = http.get("http://tinysong.com/b/"+search+"?format=json&key="+key,function(res){
-    res.on('data',function(data){
-      buffer+=data
-    });  
-    res.on('end',function(){
-		console.log(buffer);
-      cb(JSON.parse(buffer))
 		client.sms.messages.create({
-			to:'+447477444929',
+			to:number,
 			from:'+441212853527',
-			body:'ahoy hoy! Testing Twilio and node.js'
+			body: out
 		}, function(error, message) {
 			// The HTTP request to Twilio will run asynchronously. This callback
 			// function will be called when a response is received from Twilio
@@ -94,6 +80,18 @@ function get_song(result, search, cb) {
 				console.log('Oops! There was an error.');
 			}
 		});
+  });
+
+});
+
+function get_song(result, search, cb, number) {
+  var buffer = ''
+  var tiny = http.get("http://tinysong.com/b/"+search+"?format=json&key="+key,function(res){
+    res.on('data',function(data){
+      buffer+=data
+    });  
+    res.on('end',function(){
+      cb(JSON.parse(buffer))
 	  });
   });
 }
