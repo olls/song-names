@@ -17,6 +17,8 @@ function sortByKey(array, key) {
 }
 
 //var app = http.createServer(function (req, res) {
+app.use(bodyParser.urlencoded({ extended: true}));
+app.use(bodyParser.json());
 app.post('/',function(req,res){
   //var url_parts = url.parse(req.url, true);
   console.log(req);
