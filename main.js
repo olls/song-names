@@ -46,7 +46,7 @@ var app = http.createServer(function (req, res) {
     var out = '';
     songs = sortByKey(songs, 'i');
     songs.forEach(function(song){
-      out += song.song + '\n';
+      out += song.song.SongName + ', ' + song.song.AlbumName + ', ' + song.song.ArtistName + '\n';
     });
     res.end(out);
   });
@@ -60,7 +60,7 @@ function get_song(result, search, cb) {
       buffer+=data
     });  
     res.on('end',function(){
-      cb(JSON.parse(buffer).SongName)
+      cb(JSON.parse(buffer))
     });
   });
 }
