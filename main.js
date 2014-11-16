@@ -17,7 +17,7 @@ function sortByKey(array, key) {
 }
 
 //var app = http.createServer(function (req, res) {
-app.get('/',function(req,res){
+app.post('/',function(req,res){
   //var url_parts = url.parse(req.url, true);
   var data = JSON.parse(req.body);
   console.log(data);
