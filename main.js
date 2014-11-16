@@ -1,4 +1,3 @@
-//var http = require('http');
 var url = require('url');
 var http = require('http');
 var bodyParser = require('body-parser');
@@ -19,9 +18,19 @@ function sortByKey(array, key) {
     });
 }
 
-//var app = http.createServer(function (req, res) {
+app.get('/form', function(req, res) {
+  res.send('<form method="post" action="/form"><input name="search"><input type="submit"></form>');
+});
+
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
+app.post('/form', function(req, res) {
+  console.log(req.body.search)
+  conv(req.body.search,res,  function(out){
+  res.send(out);
+});
+});
+
 app.post('/',function(req,res){
   //var url_parts = url.parse(req.url, true);
   search = req.body.Body;
@@ -32,6 +41,14 @@ app.post('/',function(req,res){
     return;
   }
 
+  conv(search, res,  function( out){
+    send(number, out);
+    res.end();
+  })
+
+});
+
+function conv (search, res, cb) {
   var words = search.split(" ")
   var i = 0;
   words.forEach(function (word) {
@@ -45,7 +62,7 @@ app.post('/',function(req,res){
     get_song(res, word.word, function (song) {
       songs.push({song: song, i: word.i});
       cb();
-    },number)
+    })
   }, function (err) {
     if (err) {
       console.log('err');
@@ -59,11 +76,17 @@ app.post('/',function(req,res){
     songs.forEach(function(song){
       out += song.song.SongName + ', ' + song.song.AlbumName + ', ' + song.song.ArtistName + '\n';
     });
-    res.end(out);
+    cb(out)
+  });
+
+}
+
+function send  (number, msg) {
+
 		client.sms.messages.create({
 			to:number,
 			from:'+441212853527',
-			body: out
+			body: msg
 		}, function(error, message) {
 			// The HTTP request to Twilio will run asynchronously. This callback
 			// function will be called when a response is received from Twilio
@@ -82,11 +105,9 @@ app.post('/',function(req,res){
 				console.log('Oops! There was an error.');
 			}
 		});
-  });
+}
 
-});
-
-function get_song(result, search, cb, number) {
+function get_song(result, search, cb) {
   var buffer = ''
   var tiny = http.get("http://tinysong.com/b/"+search+"?format=json&key="+key,function(res){
     res.on('data',function(data){
