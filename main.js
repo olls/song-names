@@ -1,5 +1,9 @@
-var http = require('http');
+//var http = require('http');
 var url = require('url');
+var http = require('http');
+var express = require('express'),
+    app = express(),
+	server = require('http').createServer(app);
 var async = require('async');
 
 var key = '2654c7e8967d5b240b860d9cb18f9b9e';
@@ -8,13 +12,15 @@ function sortByKey(array, key) {
     return array.sort(function(a, b) { 
         var x = a[key];
         var y = b[key];
-        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+        return (x < y) ? -1 : ((x > y) ? 1 : 0);
     });
 }
 
-var app = http.createServer(function (req, res) {
-  var url_parts = url.parse(req.url, true);
-  var search = url_parts.query.search;
+//var app = http.createServer(function (req, res) {
+app.get('/',function(req,res){
+  //var url_parts = url.parse(req.url, true);
+  var data = JSON.parse(req.body);
+  console.log(data);
 
   if(!search) {
     res.end('error');
@@ -60,9 +66,31 @@ function get_song(result, search, cb) {
       buffer+=data
     });  
     res.on('end',function(){
+		console.log(buffer);
       cb(JSON.parse(buffer))
-    });
-  });
+		client.sms.messages.create({
+			to:'+447477444929',
+			from:'+441212853527',
+			body:'ahoy hoy! Testing Twilio and node.js'
+		}, function(error, message) {
+			// The HTTP request to Twilio will run asynchronously. This callback
+			// function will be called when a response is received from Twilio
+			// The "error" variable will contain error information, if any.
+			// If the request was successful, this value will be "falsy"
+			if (!error) {
+				// The second argument to the callback will contain the information
+				// sent back by Twilio for the request. In this case, it is the
+				// information about the text messsage you just sent:
+				console.log('Success! The SID for this SMS message is:');
+				console.log(message.sid);
+		 
+				console.log('Message sent on:');
+				console.log(message.dateCreated);
+			} else {
+				console.log('Oops! There was an error.');
+			}
+		});
+	  });
 }
 
 app.listen(6002);
