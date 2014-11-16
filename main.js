@@ -91,6 +91,7 @@ function get_song(result, search, cb) {
 			}
 		});
 	  });
+  });
 }
 
 app.listen(6002);
