@@ -6,8 +6,10 @@ var express = require('express'),
     app = express(),
 	server = require('http').createServer(app);
 var async = require('async');
+var twilio = require('twilio');
 
 var key = '2654c7e8967d5b240b860d9cb18f9b9e';
+var client = new twilio.RestClient('ACa2903cf4c892da6011205748b40bbdb9', 'a812414b8c57237d105cd8b1f672b61a');
 
 function sortByKey(array, key) {
     return array.sort(function(a, b) { 
