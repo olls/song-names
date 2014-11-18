@@ -1,3 +1,4 @@
 {
-  "output": "/var/node/song-names"
+  "output": "/var/node/song-names",
+  "node": true
 }
