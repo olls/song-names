@@ -1,0 +1,11 @@
+{
+  "name": "song-names",
+  "repository": "http://github.com/olls/song-names.git",
+  "version": "1.0.0",
+  "devDependencies": {
+    "body-parser": "~1.9.2",
+    "express": "~4.10.2",
+    "async": "~0.9.0",
+    "twilio": "~1.8.0"
+  }
+}
