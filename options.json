@@ -1,4 +1,4 @@
 {
-  "output": "/var/node/song-names",
-  "node": true
+  "copy_to": "/var/node/song-names",
+  "start_cmd": ["npm install", "pm2 restart song"]
 }
